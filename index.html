@@ -1,46 +1,114 @@
 <script>
-        const N8N_URL = 'https://apps.villaitue.cl/webhook-test/autoservicio';
-        const viewer = document.getElementById('viewer');
-        
-        // --- 1. FONDO DINÁMICO (PORTAL) ---
-        const fotosPortal = [
-            'https://vsn47925-tech.github.io/img/servicio/portal-entrada.jpg',
-            'https://vsn47925-tech.github.io/img/servicio/portal-recep.jpg',
-            'https://vsn47925-tech.github.io/img/servicio/portal-villa.jpg',
-            'https://vsn47925-tech.github.io/img/servicio/portal-volcan.jpg'
-        ];
-        let currentPortal = 0;
-        
-        // Crear capa de fondo
-        document.body.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('${fotosPortal[0]}')`;
+    const N8N_URL = 'https://apps.villaitue.cl/webhook-test/autoservicio';
+    const viewer = document.getElementById('viewer');
+    const textDisplay = document.getElementById('transcription');
+    const btn = document.getElementById('btn-micro');
+
+    // --- 1. CONFIGURACIÓN DEL FONDO DINÁMICO (PORTAL) ---
+    const fotosPortal = [
+        'https://vsn47925-tech.github.io/img/servicio/portal-entrada.jpg',
+        'https://vsn47925-tech.github.io/img/servicio/portal-recep.jpg',
+        'https://vsn47925-tech.github.io/img/servicio/portal-villa.jpg',
+        'https://vsn47925-tech.github.io/img/servicio/portal-volcan.jpg'
+    ];
+
+    let currentPortal = 0;
+
+    // Función para cambiar el fondo con desvanecimiento (Fade)
+    const cambiarFondoPortal = () => {
+        const url = fotosPortal[currentPortal];
+        document.body.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('${url}')`;
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
-        document.body.style.transition = 'background-image 2s ease-in-out';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.transition = 'background-image 2s ease-in-out'; // Efecto de desvanecimiento
+        
+        currentPortal = (currentPortal + 1) % fotosPortal.length;
+    };
 
-        setInterval(() => {
-            currentPortal = (currentPortal + 1) % fotosPortal.length;
-            document.body.style.backgroundImage = `linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('${fotosPortal[currentPortal]}')`;
-        }, 10000); // Cambia cada 10 segundos
+    // Iniciar fondo inmediatamente al cargar
+    cambiarFondoPortal();
+    // Cambiar cada 8 segundos
+    setInterval(cambiarFondoPortal, 8000);
 
-        // --- 2. LÓGICA DE RESPUESTA (CARRUSEL) ---
-        const renderizar = (data) => {
-            if (data.imagenes && data.imagenes.length > 0) {
-                return `
-                <div class="flex flex-col gap-4 animate-in zoom-in duration-500 max-w-md w-full">
-                    <div class="relative overflow-hidden rounded-3xl shadow-2xl border-4 border-white/10 bg-slate-900">
-                        <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide" id="slider">
-                            ${data.imagenes.map(img => `<div class="snap-center shrink-0 w-full h-72"><img src="${img}" class="w-full h-full object-cover"></div>`).join('')}
+    // --- 2. MOTOR DE CARRUSEL PARA CABAÑAS Y SERVICIOS ---
+    const renderizarCarrusel = (data) => {
+        if (!data.imagenes || data.imagenes.length === 0) {
+            return `<div class="bg-slate-900/80 p-8 rounded-3xl border border-white/10 max-w-lg text-2xl text-white shadow-2xl backdrop-blur-md">
+                        ${data.output}
+                    </div>`;
+        }
+
+        return `
+        <div class="flex flex-col gap-4 animate-in zoom-in slide-in-from-bottom-10 duration-700 max-w-md w-full">
+            <div class="relative overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white/10 bg-slate-900 aspect-video">
+                <div class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide h-full" id="slider">
+                    ${data.imagenes.map(img => `
+                        <div class="snap-center shrink-0 w-full h-full">
+                            <img src="${img}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400?text=Imagen+Villa+Itue'">
                         </div>
-                    </div>
-                    <div class="bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl border border-white/10 text-left">
-                        <h3 class="text-2xl font-bold text-blue-400">${data.titulo}</h3>
-                        <p class="text-slate-200 mt-2">${data.descripcion || ''}</p>
-                        ${data.precio ? `<p class="text-xl font-black text-white mt-4">${data.precio}</p>` : ''}
-                    </div>
-                </div>`;
-            }
-            return `<div class="bg-slate-900/80 p-8 rounded-3xl border border-white/10 max-w-lg text-2xl text-white">${data.output}</div>`;
-        };
+                    `).join('')}
+                </div>
+                <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                    ${data.imagenes.map(() => `<div class="w-1.5 h-1.5 rounded-full bg-white/30"></div>`).join('')}
+                </div>
+            </div>
 
-        // ... (Resto del código de reconocimiento y voz igual al anterior) ...
-    </script>
+            <div class="bg-slate-900/90 backdrop-blur-xl p-7 rounded-[2.5rem] border border-white/10 text-left shadow-2xl">
+                <h3 class="text-2xl font-black text-blue-400 leading-tight">${data.titulo || 'Villa Itue'}</h3>
+                <p class="text-slate-200 mt-2 font-medium leading-relaxed">${data.descripcion || ''}</p>
+                ${data.precio ? `
+                    <div class="mt-5 flex justify-between items-center">
+                        <span class="text-2xl font-black text-white">${data.precio}</span>
+                        <span class="text-[10px] bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30 uppercase tracking-widest font-bold">Reserva Disponible</span>
+                    </div>
+                ` : ''}
+            </div>
+        </div>`;
+    };
+
+    // --- 3. RECONOCIMIENTO Y VOZ ---
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'es-ES';
+
+    const hablarDonAtilio = (texto) => {
+        window.speechSynthesis.cancel(); // Detiene cualquier voz previa
+        const utterance = new SpeechSynthesisUtterance(texto);
+        const voces = window.speechSynthesis.getVoices();
+        const voz = voces.find(v => v.lang === 'es-CL' || v.lang === 'es-MX') || voces[0];
+        
+        utterance.voice = voz;
+        utterance.pitch = 0.8;
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    };
+
+    recognition.onresult = async (event) => {
+        const query = event.results[0][0].transcript;
+        textDisplay.innerText = `Usted: "${query}"`;
+        
+        try {
+            const response = await fetch(N8N_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+
+            let data = await response.json();
+            
+            // Si n8n manda el string JSON, lo parseamos (Modo Seguro)
+            if (typeof data.output === 'string' && data.output.startsWith('{')) {
+                data = JSON.parse(data.output);
+            }
+
+            hablarDonAtilio(data.output);
+            viewer.innerHTML = renderizarCarrusel(data);
+
+        } catch (error) {
+            console.error("Error en comunicación:", error);
+        }
+    };
+
+    btn.onclick = () => { try { recognition.start(); } catch(e) {} };
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+</script>
