@@ -25,7 +25,7 @@
     </div>
 
     <div id="modal" class="modal" onclick="cerrar()">
-        <span class="cerrar">&times;</span>
+        <span class="cerrar" onclick="cerrar()">&times;</span>
         <img class="modal-content" id="imgFull">
         <div id="caption"></div>
     </div>
@@ -44,6 +44,13 @@
         function cerrar() {
             document.getElementById("modal").style.display = "none";
         }
+        
+        // Cerrar también con la tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                cerrar();
+            }
+        });
     </script>
 </body>
 </html>
