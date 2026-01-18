@@ -13,16 +13,14 @@ body {
     overflow: hidden;
 }
 
-/* Contenedor principal */
 .box {
     position: relative;
-    width: 250px;
-    height: 200px;
+    width: 200px; /* Reducimos un poco el ancho base para ayudar a la separación */
+    height: 150px;
     transform-style: preserve-3d;
-    animation: animado 30s linear infinite;
+    animation: animado 35s linear infinite;
 }
 
-/* Pausar rotación al pasar el mouse */
 .box:hover {
     animation-play-state: paused;
 }
@@ -35,8 +33,8 @@ body {
     height: 100%;
     transform-origin: center;
     transform-style: preserve-3d;
-    /* Ángulo para 14 fotos: 360 / 14 = 25.71deg */
-    transform: rotateY(calc(var(--i) * 25.71deg)) translateZ(500px);
+    /* AUMENTADO translateZ a 650px para evitar que se encimen */
+    transform: rotateY(calc(var(--i) * 25.71deg)) translateZ(650px);
     -webkit-box-reflect: below 2px linear-gradient(transparent, transparent, #0002);
 }
 
@@ -46,10 +44,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Para ver la foto entera sin deformar */
+    object-fit: contain; 
     cursor: pointer;
     transition: 0.3s;
-    border: 1px solid #333;
+    border: 1px solid #444;
 }
 
 .box span img:hover {
@@ -58,11 +56,11 @@ body {
 }
 
 @keyframes animado {
-    0% { transform: perspective(1500px) rotateY(0deg) rotateX(-10deg); }
-    100% { transform: perspective(1500px) rotateY(360deg) rotateX(-10deg); }
+    0% { transform: perspective(2000px) rotateY(0deg) rotateX(-10deg); }
+    100% { transform: perspective(2000px) rotateY(360deg) rotateX(-10deg); }
 }
 
-/* --- ESTILOS DEL MODAL --- */
+/* --- AJUSTE DEL MODAL PARA TAMAÑO NORMAL --- */
 .modal {
     display: none;
     position: fixed;
@@ -71,48 +69,49 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0,0,0,0.85);
     cursor: zoom-out;
 }
 
 .modal-content {
     margin: auto;
     display: block;
-    max-width: 90%;
-    max-height: 85%;
+    /* Ajustado para que no sea inmensa: máximo 70% de la pantalla */
+    max-width: 70%; 
+    max-height: 70%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 2px solid #fff;
-    border-radius: 5px;
-    animation: zoom 0.3s;
+    border: 4px solid #fff;
+    box-shadow: 0px 0px 20px rgba(255,255,255,0.2);
+    border-radius: 8px;
+    animation: zoom 0.3s ease-out;
 }
 
 #caption {
-    margin: auto;
-    display: block;
-    width: 80%;
-    text-align: center;
-    color: #ccc;
-    padding: 10px 0;
     position: absolute;
-    bottom: 20px;
-    left: 10%;
-    font-family: sans-serif;
+    bottom: 5%;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 4px #000;
 }
 
 @keyframes zoom {
-    from {transform: translate(-50%, -50%) scale(0)}
-    to {transform: translate(-50%, -50%) scale(1)}
+    from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 .cerrar {
     position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 50px;
     font-weight: bold;
     cursor: pointer;
+    z-index: 10000;
 }
