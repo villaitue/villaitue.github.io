@@ -27,6 +27,7 @@ body {
     padding: 0;
     width: 400%; /* El contenedor mide 4 veces el slider */
     animation: cambio 20s infinite linear;
+    animation-direction: alternate;
 }
 
 .slider li {
