@@ -9,18 +9,20 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: black;
-    overflow: hidden;
+    background-color: #050505;
+    overflow: hidden; 
 }
 
 .box {
     position: relative;
-    width: 200px; /* Reducimos un poco el ancho base para ayudar a la separación */
-    height: 150px;
+    width: 200px;
+    height: 250px;
     transform-style: preserve-3d;
-    animation: animado 35s linear infinite;
+    transform: perspective(1500px) rotateX(-10deg); 
+    animation: animado 20s linear infinite;
 }
 
+/* 1. PAUSA LA ANIMACIÓN AL PASAR EL RATÓN */
 .box:hover {
     animation-play-state: paused;
 }
@@ -33,9 +35,22 @@ body {
     height: 100%;
     transform-origin: center;
     transform-style: preserve-3d;
-    /* AUMENTADO translateZ a 650px para evitar que se encimen */
-    transform: rotateY(calc(var(--i) * 25.71deg)) translateZ(650px);
+    transform: rotateY(calc(var(--i) * 45deg)) translateZ(350px);
     -webkit-box-reflect: below 2px linear-gradient(transparent, transparent, #0002);
+    transition: 0.5s; /* Suaviza el efecto de resaltado */
+}
+
+/* 2. RESALTA LA IMAGEN SELECCIONADA */
+.box span:hover img {
+    transform: scale(1.2); /* Agranda la imagen un 20% */
+    border: 2px solid #fff; /* Le pone un borde blanco */
+    box-shadow: 0 0 20px #fff; /* Le da un brillo */
+    cursor: pointer;
+}
+
+/* Opacidad para las demás cuando una tiene hover (opcional pero elegante) */
+.box:hover span:not(:hover) {
+    opacity: 0.3;
 }
 
 .box span img {
@@ -44,74 +59,16 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain; 
-    cursor: pointer;
-    transition: 0.3s;
-    border: 1px solid #444;
-}
-
-.box span img:hover {
-    filter: brightness(1.2);
-    border: 1px solid white;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: 0.5s; /* Transición suave para el scale y brillo */
 }
 
 @keyframes animado {
-    0% { transform: perspective(2000px) rotateY(0deg) rotateX(-10deg); }
-    100% { transform: perspective(2000px) rotateY(360deg) rotateX(-10deg); }
-}
-
-/* --- AJUSTE DEL MODAL PARA TAMAÑO NORMAL --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.85);
-    cursor: zoom-out;
-}
-
-.modal-content {
-    margin: auto;
-    display: block;
-    /* Ajustado para que no sea inmensa: máximo 70% de la pantalla */
-    max-width: 70%; 
-    max-height: 70%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 4px solid #fff;
-    box-shadow: 0px 0px 20px rgba(255,255,255,0.2);
-    border-radius: 8px;
-    animation: zoom 0.3s ease-out;
-}
-
-#caption {
-    position: absolute;
-    bottom: 5%;
-    width: 100%;
-    text-align: center;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 1.2rem;
-    text-shadow: 2px 2px 4px #000;
-}
-
-@keyframes zoom {
-    from { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-.cerrar {
-    position: absolute;
-    top: 20px;
-    right: 40px;
-    color: white;
-    font-size: 50px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 10000;
+    0% {
+        transform: perspective(1500px) rotateX(-10deg) rotateY(0deg);
+    }
+    100% {
+        transform: perspective(1500px) rotateX(-10deg) rotateY(360deg);
+    }
 }
