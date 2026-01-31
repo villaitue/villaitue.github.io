@@ -1,74 +1,39 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería 3D - Proyecto Autoservicio</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #050505;
-    overflow: hidden; 
-}
+    <div class="box">
+        <span style="--i:1;"><img src="img/imagen1.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:2;"><img src="img/imagen2.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:3;"><img src="img/imagen3.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:4;"><img src="img/imagen4.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:5;"><img src="img/imagen5.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:6;"><img src="img/imagen6.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:7;"><img src="img/imagen7.jpg" onclick="abrirFoto(this)"></span>
+        <span style="--i:8;"><img src="img/imagen8.jpg" onclick="abrirFoto(this)"></span>
+    </div>
 
-.box {
-    position: relative;
-    width: 200px;
-    height: 250px;
-    transform-style: preserve-3d;
-    transform: perspective(1500px) rotateX(-10deg); 
-    animation: animado 20s linear infinite;
-}
+    <div id="modal" class="modal" onclick="cerrarFoto()">
+        <img id="foto-grande" src="" alt="Vista previa">
+    </div>
 
-/* 1. PAUSA LA ANIMACIÓN AL PASAR EL RATÓN */
-.box:hover {
-    animation-play-state: paused;
-}
+    <script>
+        function abrirFoto(elemento) {
+            const modal = document.getElementById('modal');
+            const fotoGrande = document.getElementById('foto-grande');
+            fotoGrande.src = elemento.src;
+            modal.classList.add('visible');
+        }
 
-.box span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform-origin: center;
-    transform-style: preserve-3d;
-    transform: rotateY(calc(var(--i) * 45deg)) translateZ(350px);
-    -webkit-box-reflect: below 2px linear-gradient(transparent, transparent, #0002);
-    transition: 0.5s; /* Suaviza el efecto de resaltado */
-}
-
-/* 2. RESALTA LA IMAGEN SELECCIONADA */
-.box span:hover img {
-    transform: scale(1.2); /* Agranda la imagen un 20% */
-    border: 2px solid #fff; /* Le pone un borde blanco */
-    box-shadow: 0 0 20px #fff; /* Le da un brillo */
-    cursor: pointer;
-}
-
-/* Opacidad para las demás cuando una tiene hover (opcional pero elegante) */
-.box:hover span:not(:hover) {
-    opacity: 0.3;
-}
-
-.box span img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: 0.5s; /* Transición suave para el scale y brillo */
-}
-
-@keyframes animado {
-    0% {
-        transform: perspective(1500px) rotateX(-10deg) rotateY(0deg);
-    }
-    100% {
-        transform: perspective(1500px) rotateX(-10deg) rotateY(360deg);
-    }
-}
+        function cerrarFoto() {
+            document.getElementById('modal').classList.remove('visible');
+        }
+    </script>
+</body>
+</html>
